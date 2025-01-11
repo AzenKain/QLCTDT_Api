@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mysql1:
+    image: mysql:8.4.2
+    container_name: mysql_tl_qlctt
+    environment:
+      MYSQL_ROOT_PASSWORD: super-secret-123@
+      MYSQL_DATABASE: tl_qlctt
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - review_network
+
+  redis:
+    image: redis:latest
+    container_name: redis_tl_qlctt
+    ports:
+      - "6379:6379"
+    networks:
+      - review_network
+
+volumes:
+  mysql_data:
+
+networks:
+  review_network:
+    driver: bridge

@@ -1,0 +1,96 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateUserDto {
+  address: String
+  birthday: DateTime
+  email: String!
+  firstName: String!
+  gender: String
+  lastName: String!
+  password: String!
+  phoneNumber: String
+  role: [String!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  CreateUser(CreateUser: CreateUserDto!): UserType!
+  CreateUserByList(CreateUser: [CreateUserDto!]!): [UserType!]!
+  DeleteUser(id: String!): ResponseType!
+  UpdateProfileUser(UpdateProfile: UpdateProfileDto!): UserType!
+  UpdateRoleUser(UpdateRole: UpdateRoleDto!): UserType!
+}
+
+type Query {
+  GetUserById(id: String!): UserType!
+  SearchUserWithOption(SearchUser: SearchUserDto!): SearchUser!
+}
+
+type ResponseType {
+  message: String!
+}
+
+type SearchUser {
+  data: [UserType!]!
+  maxValue: Float!
+}
+
+input SearchUserDto {
+  address: String
+  birthday: DateTime
+  count: Float
+  email: String
+  firstName: String
+  gender: String
+  index: Float
+  lastName: String
+  phoneNumber: String
+  role: [String!]
+  sort: String
+}
+
+input UpdateProfileDto {
+  address: String
+  birthday: DateTime
+  firstName: String
+  gender: String
+  imgDisplay: String
+  lastName: String
+  phoneNumber: String
+}
+
+input UpdateRoleDto {
+  role: [String!]!
+  userId: String!
+}
+
+type UserDetail {
+  address: String
+  birthday: DateTime
+  firstName: String
+  gender: String
+  id: ID!
+  imgDisplay: String
+  lastName: String
+  phoneNumber: String
+}
+
+type UserType {
+  created_at: DateTime!
+  details: UserDetail
+  email: String!
+  hash: String
+  id: ID!
+  isDisplay: Boolean!
+  position: [String!]!
+  refreshToken: String
+  role: [String!]!
+  secretKey: String!
+  updated_at: DateTime!
+}
