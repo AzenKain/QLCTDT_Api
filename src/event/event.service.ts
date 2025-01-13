@@ -38,11 +38,13 @@ export class EventService {
     const currentTime = new Date();
 
     const cacheEvent : EventEntity = await this.cacheManager.get(
-      `event:eventType:${dto.eventType}`,
+      `event:schoolYearId:${dto.schoolYearId}:eventType:${dto.eventType}`,
     );
 
     if (cacheEvent) {
-      if (currentTime < cacheEvent.endTime && cacheEvent.eventStatus == true) {
+      console.log(currentTime)
+      console.log(cacheEvent.endTime)
+      if (currentTime <= cacheEvent.endTime && cacheEvent.eventStatus == true) {
         throw new ForbiddenException('An event with the same time range is already ongoing');
       }
     }
@@ -51,7 +53,10 @@ export class EventService {
       where: {
         eventType: dto.eventType,
         endTime: MoreThanOrEqual(currentTime),
-        eventStatus: true
+        eventStatus: true,
+        schoolYear : {
+          id: dto.schoolYearId
+        }
       },
     });
 
@@ -70,7 +75,7 @@ export class EventService {
 
     const result = await this.eventRepository.save(newEvent);
     await this.cacheManager.set(`event:id:${result.id}`, result);
-    await this.cacheManager.set(`event:eventType:${result.eventType}`, result);
+    await this.cacheManager.set(`event:schoolYearId:${dto.schoolYearId}:eventType:${dto.eventType}`, result);
     return result;
   }
 
@@ -114,10 +119,13 @@ export class EventService {
           id: id,
           isDisplay: true
         },
+        relations: [
+          'schoolYear'
+        ]
       });
     }
 
-    await this.cacheManager.set(`event:id:${cacheEvent.id}`, cacheEvent);
+    await this.cacheManager.set(`event:id:${id}`, cacheEvent || false);
 
     if (!cacheEvent) {
       throw new NotFoundException('This event was not existed');
@@ -129,23 +137,30 @@ export class EventService {
   async getEventCurrentService(dto: GetEventCurrentDto) {
     const currentTime = new Date();
     let cacheEvent: EventEntity | undefined | null;
-    cacheEvent = await this.cacheManager.get(`event:eventType:${dto.eventType}`);
-
+    cacheEvent = await this.cacheManager.get(`event:schoolYearId:${dto.schoolYearId}:eventType:${dto.eventType}`);
 
     if (!cacheEvent || (currentTime > cacheEvent.endTime && cacheEvent.eventStatus == true)) {
+      const whereCondition: any = {
+        eventType: dto.eventType,
+        eventStatus: true,
+        startTime: LessThanOrEqual(currentTime),
+        endTime: LessThanOrEqual(currentTime),
+        isDisplay: true,
+      };
+
+      if (dto.schoolYearId !== -1) {
+        whereCondition.schoolYear = {
+          id: dto.schoolYearId,
+        };
+      }
+
       cacheEvent = await this.eventRepository.findOne({
-        where: {
-          eventType: dto.eventType,
-          eventStatus: true,
-          startTime: LessThanOrEqual(currentTime),
-          endTime: LessThanOrEqual(currentTime),
-          isDisplay: true
-        },
+        where: whereCondition,
+        relations: dto.schoolYearId !== -1 ? ['schoolYear'] : [],
       });
     }
 
-    await this.cacheManager.set(`event:eventType:${cacheEvent.eventType}`, cacheEvent);
-
+    await this.cacheManager.set(`event:schoolYearId:${dto.schoolYearId}:eventType:${dto.eventType}`, cacheEvent || false);
     return cacheEvent;
   }
 
@@ -180,16 +195,16 @@ export class EventService {
     if (dto.sort) {
       switch (dto.sort) {
         case 'created_at_asc':
-          query.orderBy('user.createdAt', 'ASC');
+          query.orderBy('event.createdAt', 'ASC');
           break;
         case 'created_at_desc':
-          query.orderBy('user.createdAt', 'DESC');
+          query.orderBy('event.createdAt', 'DESC');
           break;
         case 'updated_at_asc':
-          query.orderBy('user.updatedAt', 'ASC');
+          query.orderBy('event.updatedAt', 'ASC');
           break;
         case 'updated_at_desc':
-          query.orderBy('user.updatedAt', 'DESC');
+          query.orderBy('event.updatedAt', 'DESC');
           break;
         default:
           break;

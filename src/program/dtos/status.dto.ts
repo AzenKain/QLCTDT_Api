@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class StatusProgramDto {
   @IsNotEmpty()
@@ -8,4 +8,8 @@ export class StatusProgramDto {
   @IsNotEmpty()
   @IsString()
   note: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  schoolYearId: number;
 }

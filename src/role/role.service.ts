@@ -130,7 +130,7 @@ export class RoleService {
       })
     }
 
-    await this.cacheManager.set(`role:id:${cacheRole.id}`, cacheRole);
+    await this.cacheManager.set(`role:id:${id}`, cacheRole || false);
 
     if (!cacheRole) {
       throw new NotFoundException(
@@ -160,16 +160,16 @@ export class RoleService {
     if (dto.sort) {
       switch (dto.sort) {
         case 'created_at_asc':
-          query.orderBy('user.createdAt', 'ASC');
+          query.orderBy('role.createdAt', 'ASC');
           break;
         case 'created_at_desc':
-          query.orderBy('user.createdAt', 'DESC');
+          query.orderBy('role.createdAt', 'DESC');
           break;
         case 'updated_at_asc':
-          query.orderBy('user.updatedAt', 'ASC');
+          query.orderBy('role.updatedAt', 'ASC');
           break;
         case 'updated_at_desc':
-          query.orderBy('user.updatedAt', 'DESC');
+          query.orderBy('role.updatedAt', 'DESC');
           break;
         default:
           break;

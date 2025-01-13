@@ -12,12 +12,12 @@ export class SearchProgramDto {
 
   @IsOptional()
   @IsNumber()
-  @MinLength(2)
+  @Transform(({ value }) => (value ? Number(value) : value))
   majorId: number;
 
   @IsOptional()
   @IsNumber()
-  @MinLength(2)
+  @Transform(({ value }) => (value ? Number(value) : value))
   schoolYearId: number;
 
   @IsOptional()

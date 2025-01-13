@@ -8,12 +8,10 @@ export class CreateEventDto {
 
   @IsNotEmpty()
   @IsDateString()
-  @Transform(({ value }) => (value ? new Date(value) : value))
   startTime: Date;
 
   @IsNotEmpty()
   @IsDateString()
-  @Transform(({ value }) => (value ? new Date(value) : value))
   endTime: Date;
 
   @IsNotEmpty()

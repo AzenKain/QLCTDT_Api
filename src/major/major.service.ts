@@ -90,7 +90,7 @@ export class MajorService {
       })
     }
 
-    await this.cacheManager.set(`major:id:${cacheMajor.id}`, cacheMajor);
+    await this.cacheManager.set(`major:id:${id}`, cacheMajor || false);
 
     if (!cacheMajor) {
       throw new NotFoundException(
@@ -112,7 +112,7 @@ export class MajorService {
       })
     }
 
-    await this.cacheManager.set(`major:majorId:${cacheMajor.majorId}`, cacheMajor);
+    await this.cacheManager.set(`major:majorId:${majorId}`, cacheMajor || false);
 
     if (!cacheMajor) {
       throw new NotFoundException(
@@ -142,16 +142,16 @@ export class MajorService {
     if (dto.sort) {
       switch (dto.sort) {
         case 'created_at_asc':
-          query.orderBy('user.createdAt', 'ASC');
+          query.orderBy('major.createdAt', 'ASC');
           break;
         case 'created_at_desc':
-          query.orderBy('user.createdAt', 'DESC');
+          query.orderBy('major.createdAt', 'DESC');
           break;
         case 'updated_at_asc':
-          query.orderBy('user.updatedAt', 'ASC');
+          query.orderBy('major.updatedAt', 'ASC');
           break;
         case 'updated_at_desc':
-          query.orderBy('user.updatedAt', 'DESC');
+          query.orderBy('major.updatedAt', 'DESC');
           break;
         default:
           break;

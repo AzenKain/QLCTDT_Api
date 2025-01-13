@@ -7,12 +7,10 @@ export class UpdateProgramDto {
 
   @IsOptional()
   @IsNumber()
-  @MinLength(2)
   majorId?: number;
 
   @IsOptional()
   @IsNumber()
-  @MinLength(2)
   schoolYearId?: number;
 
   @IsOptional()

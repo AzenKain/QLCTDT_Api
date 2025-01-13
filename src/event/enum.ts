@@ -6,6 +6,5 @@ export enum EventType {
 }
 
 export function getEventTypeFromText(text: string): EventType | undefined {
-  const formattedText = text.trim().charAt(0).toUpperCase() + text.trim().slice(1).toLowerCase();
-  return Object.values(EventType).find(status => status === formattedText);
+  return Object.values(EventType).find(status  => status.toLowerCase() === text.toLowerCase());
 }

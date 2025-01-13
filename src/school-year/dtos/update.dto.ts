@@ -13,11 +13,9 @@ export class UpdateSchoolYearDto {
 
   @IsOptional()
   @IsDateString()
-  @Transform(({ value }) => (value ? new Date(value) : value))
   startYear?: Date;
 
   @IsOptional()
   @IsDateString()
-  @Transform(({ value }) => (value ? new Date(value) : value))
   endYear?: Date;
 }

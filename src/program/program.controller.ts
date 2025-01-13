@@ -45,9 +45,10 @@ export class ProgramController {
   @Post('read-file')
   async createProgramByFileController(
     @UploadedFile() file: Express.Multer.File,
+    @Body('schoolYearId', ParseIntPipe) dto : number,
     @CurrentUserAccess() user: UserEntity
   ) {
-    return await this.programService.createProgramByFileService(file, user)
+    return await this.programService.createProgramByFileService(file, user, dto)
   }
 
   @Patch('update-draft/:id')

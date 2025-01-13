@@ -1,4 +1,0 @@
-nest g module program
-nest g controller event --no-spec
-nest g service event --no-spec
-

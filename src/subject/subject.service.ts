@@ -25,7 +25,7 @@ export class SubjectService {
       throw new ForbiddenException('Role forbidden');
     }
 
-    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateSubject})) {
+    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateSubject, schoolYearId: -1})) {
       throw new ForbiddenException('This time is not allowed create program!');
     }
 
@@ -73,7 +73,7 @@ export class SubjectService {
       throw new ForbiddenException('Role forbidden');
     }
 
-    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateSubject})) {
+    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateSubject, schoolYearId: -1})) {
       throw new ForbiddenException('This time is not allowed create program!');
     }
 
@@ -111,7 +111,7 @@ export class SubjectService {
       throw new ForbiddenException('Role forbidden');
     }
 
-    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateSubject})) {
+    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateSubject, schoolYearId: -1})) {
       throw new ForbiddenException('This time is not allowed create program!');
     }
 
@@ -142,7 +142,7 @@ export class SubjectService {
       });
     }
 
-    await this.cacheManager.set(`subject:subjectId:${cacheSubject.subjectId}`, cacheSubject);
+    await this.cacheManager.set(`subject:subjectId:${subjectId}`, cacheSubject || false);
 
     if (!cacheSubject) {
       throw new NotFoundException('This subject was not existed');
@@ -215,7 +215,7 @@ export class SubjectService {
       });
     }
 
-    await this.cacheManager.set(`subject:id:${cacheSubject.id}`, cacheSubject);
+    await this.cacheManager.set(`subject:id:${id}`, cacheSubject || false);
 
     if (!cacheSubject) {
       throw new NotFoundException('This subject was not existed');
@@ -296,16 +296,16 @@ export class SubjectService {
     if (dto.sort) {
       switch (dto.sort) {
         case 'created_at_asc':
-          query.orderBy('user.createdAt', 'ASC');
+          query.orderBy('subject.createdAt', 'ASC');
           break;
         case 'created_at_desc':
-          query.orderBy('user.createdAt', 'DESC');
+          query.orderBy('subject.createdAt', 'DESC');
           break;
         case 'updated_at_asc':
-          query.orderBy('user.updatedAt', 'ASC');
+          query.orderBy('subject.updatedAt', 'ASC');
           break;
         case 'updated_at_desc':
-          query.orderBy('user.updatedAt', 'DESC');
+          query.orderBy('subject.updatedAt', 'DESC');
           break;
         default:
           break;

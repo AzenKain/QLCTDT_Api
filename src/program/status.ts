@@ -13,8 +13,7 @@ export enum ProgramStage {
 }
 
 export function getProgramStatusFromText(text: string): ProgramStatus | undefined {
-  const formattedText = text.trim().charAt(0).toUpperCase() + text.trim().slice(1).toLowerCase();
-  return Object.values(ProgramStatus).find(status => status === formattedText);
+  return Object.values(ProgramStatus).find(status => status.toLowerCase()=== text.toLowerCase());
 }
 
 const stageTransitions: Record<ProgramStage, ProgramStatus[]> = {

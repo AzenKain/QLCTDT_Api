@@ -68,7 +68,7 @@ export class ProgramService {
       throw new ForbiddenException('Role forbidden');
     }
 
-    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateProgramDraft})) {
+    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateProgramDraft, schoolYearId: dto.schoolYearId})) {
       throw new ForbiddenException('This time is not allowed create program!');
     }
 
@@ -117,12 +117,12 @@ export class ProgramService {
     return result;
   }
 
-  async createProgramByFileService(file: Express.Multer.File, user: UserEntity) {
+  async createProgramByFileService(file: Express.Multer.File, user: UserEntity, schoolYearId: number) {
     if (!user.role.informationLookupRule.importProgram) {
       throw new ForbiddenException('Role forbidden');
     }
 
-    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateProgramDraft})) {
+    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateProgramDraft, schoolYearId: schoolYearId})) {
       throw new ForbiddenException('This time is not allowed create program!');
     }
 
@@ -239,7 +239,7 @@ export class ProgramService {
       if (!user.role.informationLookupRule.sendApprovalRequest) {
         throw new ForbiddenException('Role forbidden');
       }
-      if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateProgramDraft})) {
+      if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateProgramDraft, schoolYearId: dto.schoolYearId})) {
         throw new ForbiddenException('This time is not allowed request program!');
       }
 
@@ -261,7 +261,7 @@ export class ProgramService {
       if (!user.role.informationLookupRule.approveRequest) {
         throw new ForbiddenException('Role forbidden');
       }
-      if (!await this.eventService.getEventCurrentService({eventType: EventType.ApproveRequest})) {
+      if (!await this.eventService.getEventCurrentService({eventType: EventType.ApproveRequest, schoolYearId: dto.schoolYearId})) {
         throw new ForbiddenException('This time is not allowed request program!');
       }
     }
@@ -287,11 +287,13 @@ export class ProgramService {
     if (!user.role.informationLookupRule.editProgramDraft) {
       throw new ForbiddenException('Role forbidden');
     }
-    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateProgramDraft})) {
-      throw new ForbiddenException('This time is not allowed edit draft program!');
-    }
+
 
     const cacheProgram = await this.getProgramByIdService(id);
+
+    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateProgramDraft, schoolYearId: cacheProgram.draft.schoolYear.id})) {
+      throw new ForbiddenException('This time is not allowed edit draft program!');
+    }
 
     const currentStatus = getProgramStatusFromText(cacheProgram.status);
     if (!currentStatus) {
@@ -350,11 +352,13 @@ export class ProgramService {
       throw new ForbiddenException('Role forbidden');
     }
 
-    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateProgramRequest})) {
-      throw new ForbiddenException('This time is not allowed edit request program!');
-    }
+
 
     const cacheProgram = await this.getProgramByIdService(id);
+
+    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateProgramRequest, schoolYearId: cacheProgram.request.schoolYear.id})) {
+      throw new ForbiddenException('This time is not allowed edit draft program!');
+    }
 
     const currentStatus = getProgramStatusFromText(cacheProgram.status);
     if (!currentStatus) {
@@ -414,11 +418,12 @@ export class ProgramService {
       throw new ForbiddenException('Role forbidden');
     }
 
-    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateProgramDraft})) {
-      throw new ForbiddenException('This time is not allowed edit program!');
-    }
 
     const cacheProgram = await this.getProgramByIdService(id);
+
+    if (!await this.eventService.getEventCurrentService({eventType: EventType.UpdateProgramDraft, schoolYearId: cacheProgram.draft.schoolYear.id})) {
+      throw new ForbiddenException('This time is not allowed edit program!');
+    }
 
     cacheProgram.draft.isDisplay = false;
 
@@ -463,7 +468,7 @@ export class ProgramService {
       });
     }
 
-    await this.cacheManager.set(`program:id:${cacheProgram.id}`, cacheProgram);
+    await this.cacheManager.set(`program:id:${id}`, cacheProgram || false);
 
     if (!cacheProgram) {
       throw new NotFoundException('This program was not existed');
@@ -475,11 +480,6 @@ export class ProgramService {
   async searchProgramService(dto: SearchProgramDto, user:UserEntity) {
     if (!user.role.informationLookupRule.viewProgram) {
       throw new ForbiddenException('Role forbidden');
-    }
-
-    const currentStatus = getProgramStatusFromText(dto.status);
-    if (!currentStatus) {
-      throw new ForbiddenException('Status is not valid');
     }
 
     const query = this.programRepository
@@ -507,7 +507,13 @@ export class ProgramService {
 
     query.andWhere('program.isDisplay = :isDisplay', { isDisplay: true });
 
-    query.andWhere('program.status LIKE :status', { status: currentStatus });
+    if (dto.status) {
+      const currentStatus = getProgramStatusFromText(dto.status);
+      if (!currentStatus) {
+        throw new ForbiddenException('Status is not valid');
+      }
+      query.andWhere('program.status LIKE :status', { status: currentStatus });
+    }
 
     if (dto.majorId) {
       query.andWhere('requestMajor.id = :majorId', { majorId: `%${dto.majorId}%` });
@@ -528,16 +534,16 @@ export class ProgramService {
     if (dto.sort) {
       switch (dto.sort) {
         case 'created_at_asc':
-          query.orderBy('user.createdAt', 'ASC');
+          query.orderBy('program.createdAt', 'ASC');
           break;
         case 'created_at_desc':
-          query.orderBy('user.createdAt', 'DESC');
+          query.orderBy('program.createdAt', 'DESC');
           break;
         case 'updated_at_asc':
-          query.orderBy('user.updatedAt', 'ASC');
+          query.orderBy('program.updatedAt', 'ASC');
           break;
         case 'updated_at_desc':
-          query.orderBy('user.updatedAt', 'DESC');
+          query.orderBy('program.updatedAt', 'DESC');
           break;
         default:
           break;

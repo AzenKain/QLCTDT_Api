@@ -94,7 +94,7 @@ export class SchoolYearService {
       })
     }
 
-    await this.cacheManager.set(`schoolYear:id:${cacheSchoolYear.id}`, cacheSchoolYear);
+    await this.cacheManager.set(`schoolYear:id:${id}`, cacheSchoolYear || false);
 
     if (!cacheSchoolYear) {
       throw new NotFoundException(
@@ -116,7 +116,7 @@ export class SchoolYearService {
       })
     }
 
-    await this.cacheManager.set(`schoolYear:schoolYearId:${cacheSchoolYear.schoolYearId}`, cacheSchoolYear);
+    await this.cacheManager.set(`schoolYear:schoolYearId:${schoolYearId}`, cacheSchoolYear || false);
 
     if (!cacheSchoolYear) {
       throw new NotFoundException(
@@ -146,16 +146,16 @@ export class SchoolYearService {
     if (dto.sort) {
       switch (dto.sort) {
         case 'created_at_asc':
-          query.orderBy('user.createdAt', 'ASC');
+          query.orderBy('schoolYear.createdAt', 'ASC');
           break;
         case 'created_at_desc':
-          query.orderBy('user.createdAt', 'DESC');
+          query.orderBy('schoolYear.createdAt', 'DESC');
           break;
         case 'updated_at_asc':
-          query.orderBy('user.updatedAt', 'ASC');
+          query.orderBy('schoolYear.updatedAt', 'ASC');
           break;
         case 'updated_at_desc':
-          query.orderBy('user.updatedAt', 'DESC');
+          query.orderBy('schoolYear.updatedAt', 'DESC');
           break;
         default:
           break;

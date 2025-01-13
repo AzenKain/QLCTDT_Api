@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsDateString, IsISO8601, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateSchoolYearDto {
@@ -13,11 +13,9 @@ export class CreateSchoolYearDto {
 
   @IsNotEmpty()
   @IsDateString()
-  @Transform(({ value }) => (value ? new Date(value) : value))
   startYear: Date;
 
   @IsNotEmpty()
   @IsDateString()
-  @Transform(({ value }) => (value ? new Date(value) : value))
   endYear: Date;
 }

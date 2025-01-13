@@ -92,7 +92,7 @@ export class ClassService {
       })
     }
 
-    await this.cacheManager.set(`class:id:${cacheClass.id}`, cacheClass);
+    await this.cacheManager.set(`class:id:${id}`, cacheClass || false);
 
     if (!cacheClass) {
       throw new NotFoundException(
@@ -122,16 +122,16 @@ export class ClassService {
     if (dto.sort) {
       switch (dto.sort) {
         case 'created_at_asc':
-          query.orderBy('user.createdAt', 'ASC');
+          query.orderBy('class.createdAt', 'ASC');
           break;
         case 'created_at_desc':
-          query.orderBy('user.createdAt', 'DESC');
+          query.orderBy('class.createdAt', 'DESC');
           break;
         case 'updated_at_asc':
-          query.orderBy('user.updatedAt', 'ASC');
+          query.orderBy('class.updatedAt', 'ASC');
           break;
         case 'updated_at_desc':
-          query.orderBy('user.updatedAt', 'DESC');
+          query.orderBy('class.updatedAt', 'DESC');
           break;
         default:
           break;

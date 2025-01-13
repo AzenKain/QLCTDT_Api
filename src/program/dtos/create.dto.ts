@@ -7,12 +7,10 @@ export class CreateProgramDto {
 
   @IsNotEmpty()
   @IsNumber()
-  @MinLength(2)
   majorId: number;
 
   @IsNotEmpty()
   @IsNumber()
-  @MinLength(2)
   schoolYearId: number;
 
   @IsNotEmpty()

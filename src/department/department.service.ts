@@ -89,7 +89,7 @@ export class DepartmentService {
       })
     }
 
-    await this.cacheManager.set(`department:id:${cacheDepartment.id}`, cacheDepartment);
+    await this.cacheManager.set(`department:id:${id}`, cacheDepartment || false);
 
     if (!cacheDepartment) {
       throw new NotFoundException(
@@ -119,16 +119,16 @@ export class DepartmentService {
     if (dto.sort) {
       switch (dto.sort) {
         case 'created_at_asc':
-          query.orderBy('user.createdAt', 'ASC');
+          query.orderBy('department.createdAt', 'ASC');
           break;
         case 'created_at_desc':
-          query.orderBy('user.createdAt', 'DESC');
+          query.orderBy('department.createdAt', 'DESC');
           break;
         case 'updated_at_asc':
-          query.orderBy('user.updatedAt', 'ASC');
+          query.orderBy('department.updatedAt', 'ASC');
           break;
         case 'updated_at_desc':
-          query.orderBy('user.updatedAt', 'DESC');
+          query.orderBy('department.updatedAt', 'DESC');
           break;
         default:
           break;

@@ -1,9 +1,10 @@
-import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Min, MinLength } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class SearchUserDto {
   @IsOptional()
   @IsString()
+  @MinLength(2)
   userId?: string;
 
   @IsOptional()

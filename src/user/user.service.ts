@@ -249,7 +249,7 @@ export class UserService {
       delete cacheUser.refreshToken;
     }
 
-    await this.cacheManager.set(`user:id:${id}`, cacheUser);
+    await this.cacheManager.set(`user:id:${id}`, cacheUser || false);
 
     if (!cacheUser) {
       throw new NotFoundException(
@@ -285,7 +285,7 @@ export class UserService {
       })
     }
 
-    await this.cacheManager.set(`user:email:${email}`, cacheUser);
+    await this.cacheManager.set(`user:email:${email}`, cacheUser || false);
 
 
     if (!cacheUser) {
@@ -327,7 +327,7 @@ export class UserService {
       delete cacheUser.refreshToken;
     }
 
-    await this.cacheManager.set(`user:secretKey:${secretKey}`, cacheUser);
+    await this.cacheManager.set(`user:secretKey:${secretKey}`, cacheUser || false);
 
     return cacheUser
   }
@@ -364,7 +364,7 @@ export class UserService {
       delete cacheUser.refreshToken;
     }
 
-    await this.cacheManager.set(`user:email:${email}:secret:${secretKey}`, cacheUser);
+    await this.cacheManager.set(`user:email:${email}:secret:${secretKey}`, cacheUser || false);
 
     return cacheUser
   }

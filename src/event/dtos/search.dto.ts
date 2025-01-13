@@ -18,6 +18,7 @@ export class SearchEventDto {
 
   @IsOptional()
   @IsNumber()
+  @Transform(({ value }) => (value ? new Date(value) : value))
   schoolYearId?: number
 
   @IsOptional()
@@ -41,4 +42,9 @@ export class GetEventCurrentDto {
   @IsNotEmpty()
   @IsString()
   eventType: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Transform(({ value }) => (value ? new Date(value) : value))
+  schoolYearId: number
 }
